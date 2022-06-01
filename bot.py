@@ -4,8 +4,10 @@ from telegram.ext.callbackcontext import CallbackContext
 from telegram.ext.commandhandler import CommandHandler
 from telegram.ext.messagehandler import MessageHandler
 from telegram.ext.filters import Filters
-  
-updater = Updater("5404507587:AAEc3mmotE7zIg5Hdza_TQBk6hfuqB2jQDs",
+import os
+PORT = int(os.environ.get('PORT', 5000))
+TOKEN = "5404507587:AAEc3mmotE7zIg5Hdza_TQBk6hfuqB2jQDs"
+updater = Updater(TOKEN,
                   use_context=True)
   
   
@@ -66,5 +68,7 @@ updater.dispatcher.add_handler(MessageHandler(
   
 # Filters out unknown messages.
 updater.dispatcher.add_handler(MessageHandler(Filters.text, unknown_text))
-  
-updater.start_polling()
+updater.start_webhook(listen="0.0.0.0",
+                          port=int(PORT),
+                          url_path=TOKEN)
+updater.bot.setWebhook('https://gym-my-telegram-bot.herokuapp.com/' + TOKEN)
