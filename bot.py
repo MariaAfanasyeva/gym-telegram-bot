@@ -68,7 +68,7 @@ updater.dispatcher.add_handler(MessageHandler(
   
 # Filters out unknown messages.
 updater.dispatcher.add_handler(MessageHandler(Filters.text, unknown_text))
-updater.start_webhook(listen="0.0.0.0",
-                          port=int(PORT),
-                          url_path=TOKEN)
-updater.bot.setWebhook('https://gym-my-telegram-bot.herokuapp.com/' + TOKEN)
+
+updater.start_webhook(url_path=TOKEN, 
+                          webhook_url='https://gym-my-telegram-bot.herokuapp.com/' + TOKEN)
+# updater.bot.setWebhook('https://gym-my-telegram-bot.herokuapp.com/' + TOKEN)
