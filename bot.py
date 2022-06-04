@@ -5,12 +5,15 @@ from telegram.ext.commandhandler import CommandHandler
 from telegram.ext.messagehandler import MessageHandler
 from telegram.ext.filters import Filters
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 PORT = int(os.environ.get('PORT', 80))
-TOKEN = "5404507587:AAEc3mmotE7zIg5Hdza_TQBk6hfuqB2jQDs"
-updater = Updater(TOKEN,
-                  use_context=True)
-  
+TOKEN = os.environ.get("TOKEN")
+
+HEROKU = os.environ.get('HEROKU')
+
   
 def start(update: Update, context: CallbackContext):
     update.message.reply_text(
@@ -57,6 +60,9 @@ def unknown_text(update: Update, context: CallbackContext):
         "Sorry I can't recognize you , you said '%s'" % update.message.text)
   
 def main():
+    updater = Updater(TOKEN,
+                  use_context=True)
+  
     updater.dispatcher.add_handler(CommandHandler('start', start))
     updater.dispatcher.add_handler(CommandHandler('youtube', youtube_url))
     updater.dispatcher.add_handler(CommandHandler('help', help))
@@ -68,11 +74,13 @@ def main():
     Filters.command, unknown))  # Filters out unknown commands
   
     # Filters out unknown messages.
-    # updater.dispatcher.add_handler(MessageHandler(Filters.text, unknown_text))
-    # updater.start_polling()
+    updater.dispatcher.add_handler(MessageHandler(Filters.text, unknown_text))
     
-    updater.start_webhook(listen='0.0.0.0', port=PORT,url_path=TOKEN, webhook_url='https://gym-my-telegram-bot.herokuapp.com/' + TOKEN)
-    updater.bot.setWebhook('https://gym-my-telegram-bot.herokuapp.com/' + TOKEN)
+    if not HEROKU: 
+        updater.start_webhook(listen='0.0.0.0', port=PORT,url_path=TOKEN, webhook_url='https://gym-my-telegram-bot.herokuapp.com/' + TOKEN)
+        updater.bot.setWebhook('https://gym-my-telegram-bot.herokuapp.com/' + TOKEN)
+    else:
+        updater.start_polling()
 
 if __name__ == "__main__":
     main()
